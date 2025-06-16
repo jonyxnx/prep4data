@@ -1,18 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { modelOptions, prop } from '@typegoose/typegoose';
 
-export type ItemDocument = Item & Document;
-
-@Schema()
+@modelOptions({ schemaOptions: { timestamps: true } })
 export class Item {
-  @Prop({ required: true })
-  name: string;
-
-  @Prop()
-  description: string;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
-}
-
-export const ItemSchema = SchemaFactory.createForClass(Item); 
+  @prop()
+  name!: string;
+} 
