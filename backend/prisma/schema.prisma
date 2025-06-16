@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,125 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  email         String         @unique
-  name          String
-  password      String
-  role          Role          @default(USER)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  subscriptions Subscription[]
-  comments      Comment[]
-  testAttempts  TestAttempt[]
-}
-
-model Question {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  content     String
-  type        QuestionType
-  options     String[]     // For multiple choice questions
-  correctAnswer String
-  explanation  String
-  difficulty  Difficulty   @default(MEDIUM)
-  tags        String[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  comments    Comment[]
-  testAttempts TestAttemptQuestion[]
-  testQuestions TestQuestion[]
-}
-
-model Test {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  duration    Int          // Duration in minutes
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  attempts    TestAttempt[]
-  testQuestions TestQuestion[]
-}
-
-model TestQuestion {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  test        Test      @relation(fields: [testId], references: [id])
-  testId      String    @db.ObjectId
-  question    Question  @relation(fields: [questionId], references: [id])
-  questionId  String    @db.ObjectId
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@unique([testId, questionId])
-}
-
-model TestAttempt {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  user        User         @relation(fields: [userId], references: [id])
-  userId      String       @db.ObjectId
-  test        Test         @relation(fields: [testId], references: [id])
-  testId      String       @db.ObjectId
-  score       Float?
-  startedAt   DateTime    @default(now())
-  completedAt DateTime?
-  answers     TestAttemptQuestion[]
-}
-
-model TestAttemptQuestion {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  testAttempt     TestAttempt @relation(fields: [testAttemptId], references: [id])
-  testAttemptId   String    @db.ObjectId
-  question        Question  @relation(fields: [questionId], references: [id])
-  questionId      String    @db.ObjectId
-  userAnswer      String?
-  isCorrect       Boolean?
-}
-
-model Subscription {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String    @db.ObjectId
-  plan        PlanType
-  startDate   DateTime  @default(now())
-  endDate     DateTime
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Comment {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  content     String
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String    @db.ObjectId
-  question    Question  @relation(fields: [questionId], references: [id])
-  questionId  String    @db.ObjectId
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum QuestionType {
-  MULTIPLE_CHOICE
-  TRUE_FALSE
-  SHORT_ANSWER
-  ESSAY
-}
-
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-}
-
-enum PlanType {
-  FREE
-  BASIC
-  PREMIUM
-}
+model Item {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+} 
